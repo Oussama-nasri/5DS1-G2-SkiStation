@@ -20,7 +20,7 @@ import java.util.Optional;
 // import tn.esprit.spring.entities.Subscription;
 // import tn.esprit.spring.entities.TypeSubscription;
 
- class SubscriptionServiceImplTest {
+ class SubscriptionServicesImplTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
