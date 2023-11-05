@@ -16,7 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
- class SubscriptionServicesJunitTest {
+// Import your Subscription and TypeSubscription classes as well
+// import tn.esprit.spring.entities.Subscription;
+// import tn.esprit.spring.entities.TypeSubscription;
+
+ class SubscriptionServiceImplTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
@@ -33,12 +37,11 @@ import java.util.Optional;
     }
 
     @Test
-    void whenAddAnnualSubscription_thenEndDateIsOneYearLater() {
+     void testAddAnnualSubscription() {
         // Arrange
-        LocalDate startDate = LocalDate.now();
         Subscription subscription = new Subscription();
-        subscription.setStartDate(startDate);
         subscription.setTypeSub(TypeSubscription.ANNUAL);
+        subscription.setStartDate(LocalDate.now());
 
         when(subscriptionRepository.save(any(Subscription.class))).thenAnswer(i -> i.getArguments()[0]);
 
@@ -47,16 +50,16 @@ import java.util.Optional;
 
         // Assert
         assertNotNull(savedSubscription.getEndDate());
-        assertEquals(startDate.plusYears(1), savedSubscription.getEndDate());
+        assertEquals(savedSubscription.getStartDate().plusYears(1), savedSubscription.getEndDate());
     }
 
-
     @Test
-     void whenRetrieveSubscriptionById_thenCorrectSubscriptionIsReturned() {
+     void testRetrieveSubscriptionById() {
         // Arrange
         Long subscriptionId = 1L;
         Subscription subscription = new Subscription();
         subscription.setNumSub(subscriptionId);
+
         when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(subscription));
 
         // Act
