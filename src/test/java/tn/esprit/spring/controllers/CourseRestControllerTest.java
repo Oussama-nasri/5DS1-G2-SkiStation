@@ -44,12 +44,12 @@ class CourseRestControllerTest {
         // Arrange
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setLevel(1);
-        courseDTO.setTypeCourse(TypeCourse.COLLECTIVE_ADULT);
-        courseDTO.setSupport(Support.SNOWBOARD);
+        courseDTO.setTypeCourse(TypeCourse.SKI);
+        courseDTO.setSupport(Support.EQUIPMENT);
         courseDTO.setPrice(100.0f);
         courseDTO.setTimeSlot(2);
 
-        Course createdCourse = new Course(1L, 1, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 100.0f, 2, null);
+        Course createdCourse = new Course(1L, 1, TypeCourse.SKI, Support.EQUIPMENT, 100.0f, 2, null);
 
         given(courseServices.addCourse(any(Course.class))).willReturn(createdCourse);
 
@@ -67,7 +67,7 @@ class CourseRestControllerTest {
     @Test
     void whenGetAllCourses_thenCourseListReturned() throws Exception {
         // Arrange
-        List<Course> allCourses = Arrays.asList(new Course(1L, 1, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 100.0f, 2, null));
+        List<Course> allCourses = Arrays.asList(new Course(1L, 1, TypeCourse.SKI, Support.EQUIPMENT, 100.0f, 2, null));
         given(courseServices.retrieveAllCourses()).willReturn(allCourses);
 
         // Act & Assert
