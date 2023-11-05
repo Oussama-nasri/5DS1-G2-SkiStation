@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Skier;
+import tn.esprit.spring.entities.SkierDTO;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.services.ISkierServices;
 
@@ -20,20 +21,35 @@ public class SkierRestController {
 
     @Operation(description = "Add Skier")
     @PostMapping("/add")
-    public Skier addSkier(@RequestBody Skier skier){
-        return  skierServices.addSkier(skier);
+    public Skier addSkier(@RequestBody SkierDTO skierDTO) {
+        Skier skier = new Skier();
+        skier.setFirstName(skierDTO.getFirstName());
+        skier.setLastName(skierDTO.getLastName());
+        skier.setDateOfBirth(skierDTO.getDateOfBirth());
+        skier.setCity(skierDTO.getCity());
+        // Set other properties if necessary.
+
+        return skierServices.addSkier(skier);
     }
+
 
     @Operation(description = "Add Skier And Assign To Course")
     @PostMapping("/addAndAssign/{numCourse}")
-    public Skier addSkierAndAssignToCourse(@RequestBody Skier skier,
-                                           @PathVariable("numCourse") Long numCourse){
-        return  skierServices.addSkierAndAssignToCourse(skier,numCourse);
+    public Skier addSkierAndAssignToCourse(@RequestBody SkierDTO skierDTO, @PathVariable("numCourse") Long numCourse) {
+        Skier skier = new Skier();
+        skier.setFirstName(skierDTO.getFirstName());
+        skier.setLastName(skierDTO.getLastName());
+        skier.setDateOfBirth(skierDTO.getDateOfBirth());
+        skier.setCity(skierDTO.getCity());
+        // Set other properties if necessary.
+
+        return skierServices.addSkierAndAssignToCourse(skier, numCourse);
     }
+
     @Operation(description = "Assign Skier To Subscription")
     @PutMapping("/assignToSub/{numSkier}/{numSub}")
     public Skier assignToSubscription(@PathVariable("numSkier")Long numSkier,
-                               @PathVariable("numSub") Long numSub){
+                                      @PathVariable("numSub") Long numSub){
         return skierServices.assignSkierToSubscription(numSkier, numSub);
     }
 
