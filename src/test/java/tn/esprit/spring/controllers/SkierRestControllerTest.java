@@ -1,67 +1,68 @@
 package tn.esprit.spring.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tn.esprit.spring.entities.Skier;
-import tn.esprit.spring.entities.SkierDTO;
 import tn.esprit.spring.services.ISkierServices;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+@WebMvcTest(SkierRestController.class)
 class SkierRestControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private ISkierServices skierServices;
 
-    @InjectMocks
-    private SkierRestController skierRestController;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private Skier testSkier;
+    private String skierJson;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(skierRestController).build();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse("1990-01-01", formatter);
+
+        // Set up a Skier object
+        testSkier = new Skier();
+        testSkier.setFirstName("John");
+        testSkier.setLastName("Doe");
+        testSkier.setDateOfBirth(dob);
+        testSkier.setCity("TestCity");
+
+        // JSON String representing the SkierDTO
+        skierJson = String.format(
+                "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"city\":\"%s\"}",
+                testSkier.getFirstName(), testSkier.getLastName(), dob.format(formatter), testSkier.getCity()
+        );
+
+        // Define the behavior of the service to return the test Skier when save is called
+        Mockito.when(skierServices.addSkier(Mockito.any(Skier.class))).thenReturn(testSkier);
     }
 
     @Test
-    void addSkierTest() throws Exception {
-        SkierDTO skierDTO = new SkierDTO();
-        skierDTO.setFirstName("John");
-        skierDTO.setLastName("Doe");
-        skierDTO.setDateOfBirth(LocalDate.of(1990, 1, 1));
-        skierDTO.setCity("City");
-
-        Skier skier = new Skier();
-        skier.setFirstName(skierDTO.getFirstName());
-        skier.setLastName(skierDTO.getLastName());
-        skier.setDateOfBirth(skierDTO.getDateOfBirth());
-        skier.setCity(skierDTO.getCity());
-
-        given(skierServices.addSkier(skier)).willReturn(skier);
-
+    void testAddSkier() throws Exception {
         mockMvc.perform(post("/skier/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(skierDTO)))
+                        .content(skierJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value(skierDTO.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(skierDTO.getLastName()));
+                .andExpect(jsonPath("$.firstName").value(testSkier.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(testSkier.getLastName()))
+                .andExpect(jsonPath("$.dateOfBirth").value(testSkier.getDateOfBirth().toString()))
+                .andExpect(jsonPath("$.city").value(testSkier.getCity()));
     }
 
-    // Similar tests would follow for the other endpoints...
+    // Additional tests...
 }
