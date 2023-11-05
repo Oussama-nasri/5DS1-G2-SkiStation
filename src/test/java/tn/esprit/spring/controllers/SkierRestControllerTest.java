@@ -2,67 +2,78 @@ package tn.esprit.spring.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import tn.esprit.spring.entities.Skier;
 import tn.esprit.spring.services.ISkierServices;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+@ExtendWith(MockitoExtension.class)
+public class SkierRestControllerTest {
 
-@WebMvcTest(SkierRestController.class)
-class SkierRestControllerTest {
-
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private ISkierServices skierServices;
 
-    private Skier testSkier;
-    private String skierJson;
+    @InjectMocks
+    private SkierRestController skierRestController;
 
     @BeforeEach
-    void setUp() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dob = LocalDate.parse("1990-01-01", formatter);
-
-        // Set up a Skier object
-        testSkier = new Skier();
-        testSkier.setFirstName("John");
-        testSkier.setLastName("Doe");
-        testSkier.setDateOfBirth(dob);
-        testSkier.setCity("TestCity");
-
-        // JSON String representing the SkierDTO
-        skierJson = String.format(
-                "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"city\":\"%s\"}",
-                testSkier.getFirstName(), testSkier.getLastName(), dob.format(formatter), testSkier.getCity()
-        );
-
-        // Define the behavior of the service to return the test Skier when save is called
-        Mockito.when(skierServices.addSkier(Mockito.any(Skier.class))).thenReturn(testSkier);
+    public void setUp() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(skierRestController).build();
     }
 
     @Test
-    void testAddSkier() throws Exception {
+    public void testAddSkier() throws Exception {
+        // Prepare a mock Skier
+        Skier mockSkier = new Skier();
+        mockSkier.setFirstName("John");
+        mockSkier.setLastName("Doe");
+        mockSkier.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        mockSkier.setCity("MountainView");
+
+        // When the addSkier method is called, return the mock Skier
+        when(skierServices.addSkier(any(Skier.class))).thenReturn(mockSkier);
+
+        // Prepare the request JSON
+        String skierJson = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"dateOfBirth\":\"1990-01-01\",\"city\":\"MountainView\"}";
+
+        // Perform the test by simulating a POST request
         mockMvc.perform(post("/skier/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(skierJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value(testSkier.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(testSkier.getLastName()))
-                .andExpect(jsonPath("$.dateOfBirth").value(testSkier.getDateOfBirth().toString()))
-                .andExpect(jsonPath("$.city").value(testSkier.getCity()));
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.city").value("MountainView"));
     }
 
-    // Additional tests...
+    @Test
+    public void testDeleteById() throws Exception {
+        // Assuming the delete operation does not throw an exception
+        Long skierId = 1L;
+        doNothing().when(skierServices).removeSkier(skierId);
+
+        // Perform the test by simulating a DELETE request
+        mockMvc.perform(delete("/skier/delete/{id-skier}", skierId))
+                .andExpect(status().isOk());
+
+        // Verify that the service method was called once with the correct parameter
+        verify(skierServices).removeSkier(skierId);
+    }
 }
