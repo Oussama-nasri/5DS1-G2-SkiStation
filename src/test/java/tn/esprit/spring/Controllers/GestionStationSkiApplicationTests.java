@@ -1,4 +1,4 @@
-package tn.esprit.spring;
+package tn.esprit.spring.Controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
