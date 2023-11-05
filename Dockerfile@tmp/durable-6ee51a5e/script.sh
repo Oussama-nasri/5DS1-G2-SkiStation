@@ -1,0 +1,1 @@
+docker build -t oussamanasri/oussemanasri_5ds1-g2-skistation:latest .
