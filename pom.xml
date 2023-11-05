@@ -14,9 +14,13 @@
 	<name>gestion-station-ski</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
+		
+			<sonar.host.url>http://127.0.0.1:9000</sonar.host.url> <!-- Replace with your SonarQube server URL -->
+			<sonar.login>sqp_1e5f3bfa1d52ea5951a95b3a6685e082a1a6ad34</sonar.login> <!-- Replace with your authentication token -->
 		<java.version>1.8</java.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -57,6 +61,17 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version> <!-- Replace with the latest version -->
+			</plugin>
+			<!-- Jacoco Plugin for code coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version> <!-- Replace with the latest version -->
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
