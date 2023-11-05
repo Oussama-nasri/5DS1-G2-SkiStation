@@ -33,7 +33,6 @@ public class Course implements Serializable {
 
 	@JsonIgnore
 	@OneToMany(mappedBy= "course")
-	private Set<Registration> registrations;
+	Set<Registration> registrations;
 
 }
-
