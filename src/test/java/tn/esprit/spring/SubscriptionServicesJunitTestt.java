@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
- class SubscriptionServiceJunitTest {
+ class SubscriptionServicesJunitTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
