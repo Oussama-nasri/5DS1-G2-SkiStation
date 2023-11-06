@@ -1,12 +1,14 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.spring.entities.Piste;
 import tn.esprit.spring.services.IPisteServices;
 
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest  // Add this annotation to enable Spring testing
 public class PisteServicesJUnitTest {
 
     @Autowired
@@ -14,13 +16,12 @@ public class PisteServicesJUnitTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize or inject your PisteServices for testing
-        // You can use Spring's dependency injection to get an instance of pisteServices
-        // For example, you can use the @Autowired annotation here.
+        // No additional setup needed here
     }
 
     @Test
     void testAddPiste() {
+        // Test adding a Piste
         Piste piste = new Piste();
         piste.setNamePiste("Blue Piste");
         Piste addedPiste = pisteServices.addPiste(piste);
@@ -31,6 +32,7 @@ public class PisteServicesJUnitTest {
 
     @Test
     void testRemovePiste() {
+        // Test removing a Piste
         Piste piste = new Piste();
         piste.setNamePiste("Red Piste");
         Piste addedPiste = pisteServices.addPiste(piste);
@@ -44,7 +46,7 @@ public class PisteServicesJUnitTest {
 
     @Test
     void testRetrieveAllPistes() {
-        // You can implement this test to retrieve all pistes and verify the results.
+        // Test retrieving all pistes
         List<Piste> allPistes = pisteServices.retrieveAllPistes();
         assertNotNull(allPistes);
         // Add assertions to check the retrieved pistes.
