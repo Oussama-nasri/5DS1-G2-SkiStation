@@ -11,7 +11,7 @@ services:
 
 
   spring_app:
-    image: abdelkerimdassi/abdelkerimdassi_g2_skistation
+    image: abdelkerimdassi/oussamanasri_dockercompose_g2_skistation
     container_name: devopscontainer
     restart: on-failure
     ports:
