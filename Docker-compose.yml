@@ -9,6 +9,7 @@ services:
     volumes :
       - /home/mysql/data:/var/lib/mysql
 
+
   spring_app:
     image: mouhib99/mouhibdalhoumi_g2_skistation
     container_name: springcontainer
