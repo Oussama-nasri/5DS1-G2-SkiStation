@@ -16,6 +16,8 @@ import tn.esprit.spring.services.IRegistrationServices;
 
 import java.util.Arrays;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,19 +37,27 @@ public class RegistrationRestControllerTest {
 
     @Test
     public void testAddAndAssignToSkier() throws Exception {
+        // Create a RegistrationDTO object to send in the request body
         RegistrationDTO registrationDTO = new RegistrationDTO();
         registrationDTO.setNumWeek(10);
+
+        // Create a Registration object which will be returned by the mocked service call
         Registration registration = new Registration();
         registration.setNumWeek(registrationDTO.getNumWeek());
 
-        given(registrationServices.addRegistrationAndAssignToSkier(registration, 1L)).willReturn(registration);
+        // Stub the service call to return a Registration object
+        given(registrationServices.addRegistrationAndAssignToSkier(any(Registration.class), eq(1L)))
+                .willReturn(registration);
 
+        // Perform the request and verify the response
         mockMvc.perform(put("/registration/addAndAssignToSkier/{numSkieur}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registrationDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numWeek").value(registrationDTO.getNumWeek()));
     }
+
+
 
     @Test
     public void testNumWeeksCourseOfInstructorBySupport() throws Exception {
