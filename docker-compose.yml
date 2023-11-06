@@ -9,21 +9,12 @@ services:
     volumes:
       - /home/mysql/data:/var/lib/mysql
 
-  tomcat:
-    image: tomcat:9.0
-    container_name: tomcat_container
-    ports:
-      - "8080:8080"
-    volumes:
-      - /path/to/local/war:/usr/local/tomcat/webapps
-    depends_on:
-      - mysqldb
 
   spring_app:
     image: wajdi420/wajdihajji_g2_skistation
     container_name: devopscontainer
     restart: on-failure
     ports:
-      - "9091:9091"
+      - 9091:9091
     depends_on:
       - mysqldb
