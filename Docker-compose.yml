@@ -5,17 +5,16 @@ services:
     image: mysql:8
     restart: unless-stopped
     environment:
-      MySQL_ROOT_PASSWORD: root
-    volumes :
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
       - /home/mysql/data:/var/lib/mysql
 
 
   spring_app:
     image: mouhib99/mouhibdalhoumi_g2_skistation
-    container_name: springcontainer
+    container_name: devopscontainer
     restart: on-failure
     ports:
       - 9091:9091
     depends_on:
       - mysqldb
-
