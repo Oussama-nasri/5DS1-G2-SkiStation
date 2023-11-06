@@ -78,4 +78,5 @@ class SubscriptionRestControllerTest {
                 .andExpect(jsonPath("$.numSub").value(subscription.getNumSub()))
                 .andExpect(jsonPath("$.price").value(subscription.getPrice()));
     }
+
 }

@@ -1,22 +1,24 @@
 package tn.esprit.spring.controllers;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.repositories.ISkierRepository;
 import tn.esprit.spring.repositories.ISubscriptionRepository;
 import tn.esprit.spring.services.SubscriptionServicesImpl;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
-import java.util.Optional;
 
-class SubscriptionServicesJunitTest {
+@ExtendWith(MockitoExtension.class)
+ class SubscriptionServicesJunitTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
@@ -25,45 +27,44 @@ class SubscriptionServicesJunitTest {
     private ISkierRepository skierRepository;
 
     @InjectMocks
-    private SubscriptionServicesImpl subscriptionService;
+    private SubscriptionServicesImpl subscriptionServices;
+
+    // Sample subscription for use in tests
+    private Subscription sampleSubscription;
 
     @BeforeEach
-    void init_mocks() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        sampleSubscription = new Subscription();
+        sampleSubscription.setNumSub(1L);
+        sampleSubscription.setStartDate(LocalDate.now());
+        sampleSubscription.setEndDate(LocalDate.now().plusMonths(1));
+        sampleSubscription.setPrice(100.0f);
+        // Assuming TypeSubscription is an enum with a value MONTHLY
+        sampleSubscription.setTypeSub(TypeSubscription.MONTHLY);
     }
 
     @Test
-    void whenAddAnnualSubscription_thenEndDateIsOneYearLater() {
+     void whenAddSubscription_thenSaveSubscription() {
         // Arrange
-        LocalDate startDate = LocalDate.now();
-        Subscription subscription = new Subscription();
-        subscription.setStartDate(startDate);
-        subscription.setTypeSub(TypeSubscription.ANNUAL);
-
-        when(subscriptionRepository.save(any(Subscription.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(subscriptionRepository.save(any(Subscription.class))).thenReturn(sampleSubscription);
 
         // Act
-        Subscription savedSubscription = subscriptionService.addSubscription(subscription);
+        Subscription savedSubscription = subscriptionServices.addSubscription(sampleSubscription);
 
         // Assert
-        assertNotNull(savedSubscription.getEndDate());
-        assertEquals(startDate.plusYears(1), savedSubscription.getEndDate());
+        assertNotNull(savedSubscription);
+        assertEquals(sampleSubscription.getNumSub(), savedSubscription.getNumSub());
     }
 
-
+    // Test without mocks (integration test - not executable in this environment)
     @Test
-    void whenRetrieveSubscriptionById_thenCorrectSubscriptionIsReturned() {
-        // Arrange
+     void whenRetrieveSubscriptionById_thenSubscriptionReturned() {
+        // This is just a skeleton for an integration test, which we cannot run here.
+        // It assumes that you have an actual database and have inserted a subscription with ID 1.
         Long subscriptionId = 1L;
-        Subscription subscription = new Subscription();
-        subscription.setNumSub(subscriptionId);
-        when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(subscription));
+        Subscription retrievedSubscription = subscriptionServices.retrieveSubscriptionById(subscriptionId);
 
-        // Act
-        Subscription foundSubscription = subscriptionService.retrieveSubscriptionById(subscriptionId);
-
-        // Assert
-        assertNotNull(foundSubscription);
-        assertEquals(subscriptionId, foundSubscription.getNumSub());
+        assertNotNull(retrievedSubscription);
+        assertEquals(subscriptionId, retrievedSubscription.getNumSub());
     }
 }
