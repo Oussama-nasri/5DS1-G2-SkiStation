@@ -15,6 +15,6 @@ services:
     container_name: devopscontainer
     restart: on-failure
     ports:
-      - "9091:9091"
+      - 9091:9091
     depends_on:
       - mysqldb
