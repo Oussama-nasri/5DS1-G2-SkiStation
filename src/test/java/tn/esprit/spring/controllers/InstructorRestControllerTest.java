@@ -71,4 +71,49 @@ class InstructorRestControllerTest {
         assertEquals(2, result.size());
         assertEquals(expectedInstructors, result);
     }
+    @Test
+    void updateInstructor() {
+        // Arrange
+        InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setFirstName("UpdatedFirstName");
+        instructorDTO.setLastName("UpdatedLastName");
+        instructorDTO.setDateOfHire(LocalDate.now());
+
+        Instructor expectedInstructor = new Instructor();
+        expectedInstructor.setFirstName(instructorDTO.getFirstName());
+        expectedInstructor.setLastName(instructorDTO.getLastName());
+        expectedInstructor.setDateOfHire(instructorDTO.getDateOfHire());
+
+        given(instructorServices.updateInstructor(any(Instructor.class))).willReturn(expectedInstructor);
+
+        // Act
+        Instructor result = instructorRestController.updateInstructor(instructorDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expectedInstructor.getFirstName(), result.getFirstName());
+        assertEquals(expectedInstructor.getLastName(), result.getLastName());
+        assertEquals(expectedInstructor.getDateOfHire(), result.getDateOfHire());
+    }
+
+    @Test
+    void retrieveInstructor() {
+        // Arrange
+        Long instructorId = 1L;
+        Instructor expectedInstructor = new Instructor();
+        expectedInstructor.setFirstName("John");
+        expectedInstructor.setLastName("Doe");
+        expectedInstructor.setDateOfHire(LocalDate.now());
+
+        given(instructorServices.retrieveInstructor(instructorId)).willReturn(expectedInstructor);
+
+        // Act
+        Instructor result = instructorRestController.getById(instructorId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expectedInstructor.getFirstName(), result.getFirstName());
+        assertEquals(expectedInstructor.getLastName(), result.getLastName());
+        assertEquals(expectedInstructor.getDateOfHire(), result.getDateOfHire());
+    }
 }
